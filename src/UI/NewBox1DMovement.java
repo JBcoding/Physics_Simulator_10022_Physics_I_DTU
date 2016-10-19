@@ -90,6 +90,12 @@ public class NewBox1DMovement extends Stage {
             double kineticFrictionConstant = Double.parseDouble(this.kineticFrictionConstant.getText());
             boolean gravityEnabled = isGravityDisabled.isSelected();
             Box frictionBox = boxSelector.getSelectionModel().getSelectedItem();
+            if (frictionBox != null && frictionBox.getClass() == Box1DMovement.class) {
+                if (((Box1DMovement)frictionBox).getFrictionBox() != null) {
+                    AlertBox.info("Error", "You can't have a friction box, that also have a friction box", Alert.AlertType.ERROR);
+                    throw new IllegalArgumentException();
+                }
+            }
             Box1DMovement newBox = new Box1DMovement(position, angle, mass, velocity);
             newBox.setStaticFrictionConstant(staticFrictionConstant);
             newBox.setKineticFrictionConstant(kineticFrictionConstant);
