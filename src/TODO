@@ -1,12 +1,4 @@
 TODO:
-    Make 3D physics
-        Make "Box3D" Interface
-        Make "Box3D1DMovement" and "Box3D3DMovement"
-        Make "ForceWorkObject3D"
-        Make "PhysicsObject3D"
-        Make "RopeJoint3D"
-        Make "Spring3D"
-        Make "Vector3D"
     Make 3D CanvasController
             Make "CanvasController.java" to an Interface
             Make 2 new classes "CanvasController2D" and "CanvasController3D"
