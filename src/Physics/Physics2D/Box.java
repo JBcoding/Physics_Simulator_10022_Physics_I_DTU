@@ -1,4 +1,6 @@
-package Physics;
+package Physics.Physics2D;
+
+import Physics.PhysicsConstants;
 
 /**
  * Created by madsbjoern on 10/10/2016.

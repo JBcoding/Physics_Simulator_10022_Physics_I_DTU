@@ -1,4 +1,6 @@
-package Physics;
+package Physics.Physics2D;
+
+import Physics.PhysicsConstants;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package Physics;
+package Physics.Physics2D;
 
 /**
  * Created by madsbjoern on 15/10/2016.

@@ -1,10 +1,4 @@
-package Physics;
-
-import com.sun.org.apache.regexp.internal.REUtil;
-import com.sun.org.apache.xalan.internal.xsltc.dom.DocumentCache;
-import sun.security.util.Length;
-
-import java.util.Properties;
+package Physics.Physics2D;
 
 /**
  * Created by madsbjoern on 17/10/2016.

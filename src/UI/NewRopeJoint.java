@@ -1,6 +1,9 @@
 package UI;
 
 import Physics.*;
+import Physics.Physics2D.Box;
+import Physics.Physics2D.RopeJoint;
+import Physics.Physics2D.Vector2D;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

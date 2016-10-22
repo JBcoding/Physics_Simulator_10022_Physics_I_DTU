@@ -1,11 +1,10 @@
 package UI;
 
 import Physics.*;
-import com.sun.org.apache.xpath.internal.FoundIndex;
+import Physics.Physics2D.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 import java.util.List;
 

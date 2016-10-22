@@ -1,6 +1,7 @@
 package UI;
 
 import Physics.*;
+import Physics.Physics2D.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

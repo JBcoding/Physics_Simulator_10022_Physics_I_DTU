@@ -1,7 +1,11 @@
 package Physics;
 
+import Physics.Physics2D.Box;
+import Physics.Physics2D.PhysicsObject;
+import Physics.Physics2D.RopeJoint;
+import Physics.Physics2D.Spring;
+
 import java.util.*;
-import java.lang.*;
 
 /**
  * Created by madsbjoern on 10/10/2016.
