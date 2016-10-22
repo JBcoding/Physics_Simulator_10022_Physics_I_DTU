@@ -69,6 +69,7 @@ public class Spring implements PhysicsObject {
         return name;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public String getInfo() {
         String info = name + "\nPoint 1: " + box1.name + "\nPoint 2: ";

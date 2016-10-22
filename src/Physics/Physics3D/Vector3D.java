@@ -29,6 +29,14 @@ public class Vector3D {
         return new Vector3D(x * s, y * s, z * s);
     }
 
+    public Vector3D add(Vector3D v) {
+        return new Vector3D(x + v.x, y + v.y, z + v.z);
+    }
+
+    public Vector3D sub(Vector3D v) {
+        return new Vector3D(x - v.x, y - v.y, z - v.z);
+    }
+
     public Vector3D cross(Vector3D v) {
         return new Vector3D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
     }
@@ -60,5 +68,24 @@ public class Vector3D {
 
     public Vector3D deepCopy() {
         return new Vector3D(x, y, z);
+    }
+
+    public boolean isZero() {
+        if (getMagnitude() < 1e-15) {
+            x = 0;
+            y = 0;
+            z = 0;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Vector3D projectionOn(Vector3D v) {
+        return v.getUnitVector().scale(dot(v) / v.getMagnitude());
+    }
+
+    public String toString() {
+        return "Vec3D(" + x + ", " + y + ", " + z + ")";
     }
 }

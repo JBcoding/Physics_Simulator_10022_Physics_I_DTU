@@ -25,6 +25,7 @@ public class RopeJoint implements PhysicsObject {
         return getDistanceToBox(box1) + getDistanceToBox(box2);
     }
 
+    @SuppressWarnings("Duplicates")
     public void update(double deltaTime) {
         double newLength = getCurrentLength();
         if (newLength > length) {
