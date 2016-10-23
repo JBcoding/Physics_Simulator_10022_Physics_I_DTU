@@ -189,19 +189,19 @@ public class PhysicsController {
         // 3D
         for (Box3D b : deepCopy.box3Ds) {
             if (!b.getReferenceToOtherBoxes()) {
-                addBox((Box) b.deepCopy());
+                addBox3D((Box3D) b.deepCopy());
             }
         }
         for (Box3D b : deepCopy.box3Ds) {
             if (b.getReferenceToOtherBoxes()) {
-                addBox((Box) b.deepCopy());
+                addBox3D((Box3D) b.deepCopy());
             }
         }
         for (Spring3D s : deepCopy.spring3Ds) {
-            addSpring((Spring)s.deepCopy());
+            addSpring3D((Spring3D)s.deepCopy());
         }
         for (RopeJoint3D r : deepCopy.ropeJoint3Ds) {
-            addRopeJoint((RopeJoint)r.deepCopy());
+            addRopeJoint3D((RopeJoint3D)r.deepCopy());
         }
 
         version ++;

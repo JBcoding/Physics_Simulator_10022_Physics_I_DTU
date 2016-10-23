@@ -33,6 +33,25 @@ public final class AlertBox {
         }
     }
 
+    public static AlertResponse show2Choices(String title, String header, String content, String choice1, String choice2) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        ButtonType buttonTypeOne = new ButtonType(choice1);
+        ButtonType buttonTypeTwo = new ButtonType(choice2);
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne){
+            return AlertResponse.BUTTON_CHOICE1;
+        } else {
+            return AlertResponse.BUTTON_CHOICE2;
+        }
+    }
+
     public static void info(String title, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

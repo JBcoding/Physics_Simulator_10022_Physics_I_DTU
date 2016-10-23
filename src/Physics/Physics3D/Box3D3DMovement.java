@@ -14,6 +14,15 @@ public class Box3D3DMovement extends Box3D {
     }
 
     @Override
+    protected Vector3D getOtherForces() {
+        Vector3D otherForces = new Vector3D();
+        for (ForceWorkObject3D f : forces) {
+            otherForces = otherForces.add(f.getCurrentForce());
+        }
+        return otherForces;
+    }
+
+    @Override
     public Vector3D getNormalForce() {
         return PhysicsConstants.gravityVector.scale(mass); // assume the object always is on a plane, with full friction (I know, I know)
     }

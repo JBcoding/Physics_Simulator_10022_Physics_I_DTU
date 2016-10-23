@@ -142,6 +142,6 @@ public class TimeController extends VBox {
     }
 
     public void updateInfoBox() {
-        infoBox.setText("Time: " + pc.getTime() + " s\nTime step: " + pc.getTimeStep() + " s\n# of boxes: " + pc.getBoxes().size() + "\n# of springs: " + pc.getSprings().size());
+        infoBox.setText("Time: " + pc.getTime() + " s\nTime step: " + pc.getTimeStep());
     }
 }

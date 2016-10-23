@@ -16,6 +16,15 @@ public class Box3D1DMovement extends Box3D {
     }
 
     @Override
+    protected Vector3D getOtherForces() {
+        Vector3D otherForces = new Vector3D();
+        for (ForceWorkObject3D f : forces) {
+            otherForces = otherForces.add(f.getCurrentForce());
+        }
+        return otherForces.projectionOn(direction);
+    }
+
+    @Override
     public Vector3D getNormalForce() {
         double magnitude = Math.abs(Math.sin(Math.acos(direction.projectionOn(PhysicsConstants.gravityVector).getMagnitude())));
         return PhysicsConstants.gravityVector.scale(magnitude).scale(mass);

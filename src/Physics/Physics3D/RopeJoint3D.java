@@ -81,7 +81,7 @@ public class RopeJoint3D implements PhysicsObject3D {
     private Vector3D getNewPositionOfBoxFaulty(Box3D box, double toMove) {
         if (box.getClass() == Box3D1DMovement.class) {
             Box3D1DMovement b = (Box3D1DMovement)box;
-            Vector3D currentPos = b.getPosition();
+            Vector3D currentPos = b.getPosition().sub(point);
             Vector3D direction = b.getDirection();
             double X = currentPos.getX(), Y = currentPos.getY(), Z = currentPos.getZ();
             double A = direction.getX(), B = direction.getY(), C = direction.getZ();
@@ -94,7 +94,7 @@ public class RopeJoint3D implements PhysicsObject3D {
             if (Math.abs(u2) < Math.abs(u1)) {
                 u = u2;
             }
-            return currentPos.add(direction.scale(u));
+            return currentPos.add(direction.scale(u)).add(point);
         } else if (box.getClass() == Box3D3DMovement.class) {
             Vector3D deltaPosition = point.sub(box.getPosition());
             return point.sub(new Vector3D(deltaPosition.getUnitVector(), deltaPosition.getMagnitude() - toMove));

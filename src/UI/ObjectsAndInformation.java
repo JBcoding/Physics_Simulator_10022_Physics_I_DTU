@@ -2,6 +2,14 @@ package UI;
 
 import Physics.*;
 import Physics.Physics2D.*;
+import Physics.Physics3D.*;
+import UI.UI2D.NewBox1DMovement;
+import UI.UI2D.NewBox2DMovement;
+import UI.UI2D.NewRopeJoint;
+import UI.UI2D.NewSpring;
+import UI.UI3D.NewBox3D;
+import UI.UI3D.NewRopeJoint3D;
+import UI.UI3D.NewSpring3D;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -19,26 +27,31 @@ public class ObjectsAndInformation extends HBox {
     private MainWindow parent;
     private ListView<String> list;
     private TextArea infoBox;
-    private TextField gravityTextField;
+    private TextField gravityTextField, gravityTextFieldX, gravityTextFieldY, gravityTextFieldZ;
     private PhysicsObject currentObject;
+    private PhysicsObject3D currentObject3D;
     private int lastVersion;
 
-    public ObjectsAndInformation(PhysicsController pc, CanvasController cc, MainWindow parent) {
+    private boolean _3D;
+
+    public ObjectsAndInformation(PhysicsController pc, CanvasController cc, MainWindow parent, boolean _3D) {
         super();
         this.pc = pc;
         this.cc = cc;
         this.parent = parent;
+        this._3D = _3D;
 
         setStyle("-fx-background-color: #129906;");
         setPadding(new javafx.geometry.Insets(15, 12, 15, 12));
         setSpacing(10);
 
         list = new ListView<String>();
-        list.setPrefSize(250, 100);
+        list.setPrefSize(200, 100);
         list.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 currentObject = getObjectFromName(newValue);
+                currentObject3D = getObjectFromName3D(newValue);
                 updateInfoBox();
             }
         });
@@ -60,16 +73,24 @@ public class ObjectsAndInformation extends HBox {
         Button RightButton = new Button();
         RightButton.setText("Right");
         RightButton.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {cc.right();}});
+        Button ForwardButton = new Button();
+        ForwardButton.setText("Forward");
+        ForwardButton.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {cc.forward();}});
+        Button BackwardsButton = new Button();
+        BackwardsButton.setText("Backward");
+        BackwardsButton.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {cc.backward();}});
         Button ZoomIn = new Button();
         ZoomIn.setText("Zoom In");
         ZoomIn.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {cc.zoomIn();}});
         Button ZoomOut = new Button();
         ZoomOut.setText("Zoom Out");
         ZoomOut.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {cc.zoomOut();}});
-        UpButton.setPrefSize(120, 20);
-        DownButton.setPrefSize(120, 20);
+        UpButton.setPrefSize(60, 20);
+        DownButton.setPrefSize(60, 20);
         LeftButton.setPrefSize(60, 20);
         RightButton.setPrefSize(60, 20);
+        ForwardButton.setPrefSize(60, 20);
+        BackwardsButton.setPrefSize(60, 20);
         ZoomIn.setPrefSize(100, 20);
         ZoomOut.setPrefSize(100, 20);
         Button EditObject = new Button();
@@ -80,10 +101,21 @@ public class ObjectsAndInformation extends HBox {
         DeleteObject.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {delete();}});
         EditObject.setPrefSize(100, 20);
         DeleteObject.setPrefSize(100, 20);
-        getChildren().addAll(new VBox(UpButton, new HBox(LeftButton, RightButton), DownButton), new VBox(ZoomIn, ZoomOut, EditObject, DeleteObject));
+        HBox forwadAndBackward = new HBox(ForwardButton, BackwardsButton);
+        if (!_3D) {
+            forwadAndBackward = new HBox();
+        }
+        getChildren().addAll(new VBox(new HBox(UpButton, DownButton), new HBox(LeftButton, RightButton), forwadAndBackward), new VBox(ZoomIn, ZoomOut, EditObject, DeleteObject));
 
         gravityTextField = new TextField("9.8");
         gravityTextField.setPrefSize(80, 20);
+        gravityTextFieldX = new TextField("0");
+        gravityTextFieldX.setPrefSize(50, 20);
+        gravityTextFieldY = new TextField("-9.8");
+        gravityTextFieldY.setPrefSize(50, 20);
+        gravityTextFieldZ = new TextField("0");
+        gravityTextFieldZ.setPrefSize(50, 20);
+        HBox gravityBox = new HBox(gravityTextFieldX, gravityTextFieldY, gravityTextFieldZ);
         Button setGravity = new Button();
         setGravity.setText("Set gravity");
         setGravity.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {setGravity();}});
@@ -91,7 +123,12 @@ public class ObjectsAndInformation extends HBox {
         ResetButton.setText("Reset");
         ResetButton.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {reset();}});
         ResetButton.setPrefSize(100, 20);
-        getChildren().add(new VBox(gravityTextField, setGravity, ResetButton));
+        if (!_3D) {
+            getChildren().add(new VBox(gravityTextField, setGravity, ResetButton));
+        } else {
+            getChildren().add(new VBox(gravityBox, setGravity, ResetButton));
+        }
+
 
         update();
     }
@@ -108,6 +145,9 @@ public class ObjectsAndInformation extends HBox {
             if (currentObject != null) {
                 pc.deleteObject(currentObject);
                 parent.reDraw();
+            } else if (currentObject3D != null) {
+                pc.deleteObject3D(currentObject3D);
+                parent.reDraw();
             } else {
                 AlertBox.info("Error", "Something went wrong", Alert.AlertType.ERROR);
             }
@@ -115,47 +155,93 @@ public class ObjectsAndInformation extends HBox {
     }
 
     public void edit() {
-        if (currentObject != null) {
-            if (currentObject.getClass() == Box1DMovement.class) {
-                new NewBox1DMovement(pc, parent, (Box1DMovement)currentObject);
-            } else if (currentObject.getClass() == RopeJoint.class) {
-                new NewRopeJoint(pc, parent, (RopeJoint)currentObject);
-            } else if (currentObject.getClass() == Spring.class) {
-                new NewSpring(pc, parent, (Spring)currentObject);
-            } else if (currentObject.getClass() == Box2DMovement.class) {
-                new NewBox2DMovement(pc, parent, (Box2DMovement)currentObject);
+        if (!_3D) {
+            if (currentObject != null) {
+                if (currentObject.getClass() == Box1DMovement.class) {
+                    new NewBox1DMovement(pc, parent, (Box1DMovement) currentObject);
+                } else if (currentObject.getClass() == RopeJoint.class) {
+                    new NewRopeJoint(pc, parent, (RopeJoint) currentObject);
+                } else if (currentObject.getClass() == Spring.class) {
+                    new NewSpring(pc, parent, (Spring) currentObject);
+                } else if (currentObject.getClass() == Box2DMovement.class) {
+                    new NewBox2DMovement(pc, parent, (Box2DMovement) currentObject);
+                }
+            } else {
+                AlertBox.info("Error", "Something went wrong", Alert.AlertType.ERROR);
             }
         } else {
-            AlertBox.info("Error", "Something went wrong", Alert.AlertType.ERROR);
+            if (currentObject3D != null) {
+                if (currentObject3D.getClass() == Box3D1DMovement.class || currentObject3D.getClass() == Box3D3DMovement.class) {
+                    new NewBox3D(pc, parent, (Box3D) currentObject3D);
+                } else if (currentObject3D.getClass() == Spring3D.class) {
+                    new NewSpring3D(pc, parent, (Spring3D) currentObject3D);
+                } else if (currentObject3D.getClass() == RopeJoint3D.class) {
+                    new NewRopeJoint3D(pc, parent, (RopeJoint3D) currentObject3D);
+                }
+            } else {
+                AlertBox.info("Error", "Something went wrong", Alert.AlertType.ERROR);
+            }
         }
     }
 
     public void setGravity() {
         try {
-            PhysicsConstants.gravity = Double.parseDouble(gravityTextField.getText());
+            if (!_3D) {
+                PhysicsConstants.gravity = Double.parseDouble(gravityTextField.getText());
+            } else {
+                PhysicsConstants.gravityVector = new Vector3D(Double.parseDouble(gravityTextFieldX.getText()), Double.parseDouble(gravityTextFieldY.getText()), Double.parseDouble(gravityTextFieldZ.getText()));
+            }
         } catch (Exception e) {
             AlertBox.info("Error", "Something went wrong", Alert.AlertType.ERROR);
         }
     }
 
     public void updateInfoBox() {
-        if (currentObject != null) {
-            infoBox.setText(currentObject.getInfo());
+        if (!_3D) {
+            if (currentObject != null) {
+                infoBox.setText(currentObject.getInfo());
+            } else {
+                infoBox.setText("No object selected");
+            }
         } else {
-            infoBox.setText("No object selected");
+            if (currentObject3D != null) {
+                infoBox.setText(currentObject3D.getInfo());
+            } else {
+                infoBox.setText("No object selected");
+            }
         }
     }
 
     public void update() {
-        if (list.getItems().size() != pc.getAllObjects().size() || pc.getVersion() != lastVersion) {
-            list.getItems().clear();
-            for (PhysicsObject po : pc.getAllObjects()) {
-                list.getItems().add(po.getName());
+        if (!_3D) {
+            if (list.getItems().size() != pc.getAllObjects().size() || pc.getVersion() != lastVersion) {
+                list.getItems().clear();
+                for (PhysicsObject po : pc.getAllObjects()) {
+                    list.getItems().add(po.getName());
+                }
+                lastVersion = pc.getVersion();
+                currentObject = null;
             }
-            lastVersion = pc.getVersion();
-            currentObject = null;
+        } else {
+            if (list.getItems().size() != pc.getAllObjects3D().size() || pc.getVersion() != lastVersion) {
+                list.getItems().clear();
+                for (PhysicsObject3D po : pc.getAllObjects3D()) {
+                    list.getItems().add(po.getName());
+                }
+                lastVersion = pc.getVersion();
+                currentObject3D = null;
+            }
         }
         updateInfoBox();
+    }
+
+    public PhysicsObject3D getObjectFromName3D(String name) {
+        for (PhysicsObject3D po : pc.getAllObjects3D()) {
+            if (po.getName().equals(name)) {
+                return po;
+            }
+        }
+        return null;
     }
 
     public PhysicsObject getObjectFromName(String name) {

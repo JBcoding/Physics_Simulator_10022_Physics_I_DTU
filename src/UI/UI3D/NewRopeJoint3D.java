@@ -1,9 +1,11 @@
-package UI;
+package UI.UI3D;
 
-import Physics.*;
-import Physics.Physics2D.Box;
-import Physics.Physics2D.RopeJoint;
-import Physics.Physics2D.Vector2D;
+import Physics.Physics3D.Box3D;
+import Physics.Physics3D.RopeJoint3D;
+import Physics.Physics3D.Vector3D;
+import Physics.PhysicsController;
+import UI.AlertBox;
+import UI.MainWindow;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -15,20 +17,20 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
- * Created by madsbjoern on 17/10/2016.
+ * Created by madsbjoern on 23/10/2016.
  */
-public class NewRopeJoint extends Stage {
+public class NewRopeJoint3D extends Stage {
     private int width = 320;
     private int height = 210;
 
-    private TextField positionX, positionY;
-    private ComboBox<Box> boxSelector1, boxSelector2;
+    private TextField positionX, positionY, positionZ;
+    private ComboBox<Box3D> boxSelector1, boxSelector2;
     private PhysicsController pc;
     private MainWindow parent;
 
-    private RopeJoint ropeJoint;
+    private RopeJoint3D ropeJoint;
 
-    public NewRopeJoint(PhysicsController pc, MainWindow parent, RopeJoint ropeJoint) {
+    public NewRopeJoint3D(PhysicsController pc, MainWindow parent, RopeJoint3D ropeJoint) {
         this.pc = pc;
         this.parent = parent;
         this.ropeJoint = ropeJoint;
@@ -39,7 +41,7 @@ public class NewRopeJoint extends Stage {
         this.setMaxHeight(height);
         this.setMinWidth(width);
         this.setMinHeight(height);
-        setTitle("New Rope Joint");
+        setTitle("New Rope Joint 3D");
         setScene(scene);
         scene.setOnKeyPressed((KeyEvent evt)->{
             if ((evt.getCode() == KeyCode.ESCAPE)) {
@@ -48,17 +50,18 @@ public class NewRopeJoint extends Stage {
         });
         positionX = new TextField((ropeJoint != null) ? String.valueOf(ropeJoint.getPoint().getX()) : "0");
         positionY = new TextField((ropeJoint != null) ? String.valueOf(ropeJoint.getPoint().getY()) : "0");
+        positionZ = new TextField((ropeJoint != null) ? String.valueOf(ropeJoint.getPoint().getZ()) : "0");
         boxSelector1 = new ComboBox();
-        boxSelector1.getItems().addAll(pc.getBoxes());
+        boxSelector1.getItems().addAll(pc.getBox3Ds());
         boxSelector2 = new ComboBox();
-        boxSelector2.getItems().addAll(pc.getBoxes());
+        boxSelector2.getItems().addAll(pc.getBox3Ds());
         if (ropeJoint != null) {
             boxSelector1.getSelectionModel().select(ropeJoint.getBox1());
             boxSelector2.getSelectionModel().select(ropeJoint.getBox2());
         }
         root.getChildren().addAll(new Label("Which box must be in the first end of the rope?"), boxSelector1,
                 new Label("Second end?"), boxSelector2,
-                new Label("Fixed point, where?"), new HBox(positionX, positionY));
+                new Label("Fixed point, where?"), new HBox(positionX, positionY, positionZ));
         Button close = new Button("Cancel");
         Button add = new Button((ropeJoint != null) ? "Change" : "Add");
         close.setOnAction(new EventHandler<ActionEvent>() {public void handle(ActionEvent event) {close();}});
@@ -71,17 +74,17 @@ public class NewRopeJoint extends Stage {
 
     public void addAndClose() {
         try {
-            Box b1 = boxSelector1.getValue();
-            Box b2 = boxSelector2.getValue();
-            Vector2D position = new Vector2D(Double.parseDouble(positionX.getText()), Double.parseDouble(positionY.getText()));
-            if (b1 == null || b1 == null || b1 == b2) {
+            Box3D b1 = boxSelector1.getValue();
+            Box3D b2 = boxSelector2.getValue();
+            Vector3D position = new Vector3D(Double.parseDouble(positionX.getText()), Double.parseDouble(positionY.getText()), Double.parseDouble(positionZ.getText()));
+            if (b1 == null || b2 == null || b1 == b2) {
                 throw new NullPointerException();
             }
-            RopeJoint r = new RopeJoint(b1, b2, position);
+            RopeJoint3D r = new RopeJoint3D(b1, b2, position);
             if (ropeJoint != null) {
                 ropeJoint.copyFromObject(r);
             } else {
-                pc.addRopeJoint(r);
+                pc.addRopeJoint3D(r);
             }
             parent.reDraw();
             close();

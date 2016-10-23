@@ -66,9 +66,14 @@ public class Spring3D implements PhysicsObject3D {
     @Override
     public void copyFromObject(PhysicsObject3D o) {
         Spring3D s = (Spring3D)o;
-        this.box1 = s.box1.getLastDeepCopy();
-        this.box2 = s.box2.getLastDeepCopy();
-        this.point = s.point.deepCopy();
+        this.box1 = s.box1;
+        if (s.point != null) {
+            this.box2 = null;
+            this.point = s.point.deepCopy();
+        } else {
+            this.point = null;
+            this.box2 = s.box2;
+        }
         this.length = s.length;
         this.springConstant = s.springConstant;
     }
@@ -97,5 +102,37 @@ public class Spring3D implements PhysicsObject3D {
         info += "\nDefault length: " + length + "\nSpring Constant: " + springConstant + "\nCurrent length: " + getCurrentLength();
         info += "\nEnergy in each of the objects is " + (1/2.0 * Math.pow(getCurrentLength() - length, 2) * springConstant) + " J";
         return info;
+    }
+
+    public Vector3D getFirstPoint() {
+        return box1.getPosition();
+    }
+
+    public Vector3D getSecondPoint() {
+        if (point == null) {
+            return box2.getPosition();
+        } else {
+            return point;
+        }
+    }
+
+    public Vector3D getPoint() {
+        return point;
+    }
+
+    public double getSpringConstant() {
+        return springConstant;
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public Box3D getBox1() {
+        return box1;
+    }
+
+    public Box3D getBox2() {
+        return box2;
     }
 }

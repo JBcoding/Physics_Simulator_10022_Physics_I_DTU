@@ -34,6 +34,8 @@ public abstract class Box3D implements PhysicsObject3D {
         referenceToOtherBoxes = false;
         forces = new ArrayList<>();
         frictionBox = null;
+        oldPosition = position.deepCopy();
+        lastAcceleration = new Vector3D();
     }
 
     public Box3D (Vector3D position, Vector3D velocity) {
@@ -159,13 +161,20 @@ public abstract class Box3D implements PhysicsObject3D {
     }
 
     public void addFrictionForceWithBox(double deltaTime) {
-        Vector3D deltaVelocity = velocity.sub(frictionBox.getVelocity());
+        Vector3D deltaVelocity = frictionBox.getVelocity().sub(velocity.projectionOn(frictionBox.getVelocity()));
         Vector3D deltaAcceleration = deltaVelocity.scale(1 / deltaTime); // only works if deltatime is equal to the time step last update
         Vector3D force = deltaAcceleration.scale(mass);
+        Vector3D direction = frictionBox.getVelocity().getUnitVector();
+        if (direction.getX() != direction.getX()) { // NaN check
+            direction = deltaAcceleration.getUnitVector();
+            if (direction.getX() != direction.getX()) { // NaN check, again
+                return;
+            }
+        }
         if (force.getMagnitude() <= getStaticFrictionForce()) {
-            addForce("Friction on " + name, frictionBox.getVelocity().getUnitVector().scale(force.getMagnitude()));
+            addForce("Friction on " + name, direction.scale(force.getMagnitude()));
         } else {
-            addForce("Friction on " + name, frictionBox.getVelocity().getUnitVector().scale(getKineticFrictionForce()));
+            addForce("Friction on " + name, direction.scale(getKineticFrictionForce()));
         }
     }
 
@@ -177,13 +186,7 @@ public abstract class Box3D implements PhysicsObject3D {
         return getNormalForce().scale(kineticFrictionConstant).getMagnitude();
     }
 
-    private Vector3D getOtherForces() {
-        Vector3D otherForces = new Vector3D();
-        for (ForceWorkObject3D f : forces) {
-            otherForces = otherForces.add(f.getCurrentForce());
-        }
-        return otherForces;
-    }
+    protected abstract Vector3D getOtherForces();
 
     public abstract Vector3D getNormalForce();
 
@@ -253,5 +256,9 @@ public abstract class Box3D implements PhysicsObject3D {
 
     protected void setVelocity(Vector3D velocity) {
         this.velocity = velocity;
+    }
+
+    public String toString() {
+        return name;
     }
 }

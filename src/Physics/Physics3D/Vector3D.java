@@ -71,7 +71,7 @@ public class Vector3D {
     }
 
     public boolean isZero() {
-        if (getMagnitude() < 1e-15) {
+        if (getMagnitude() < 5e-9) {
             x = 0;
             y = 0;
             z = 0;
