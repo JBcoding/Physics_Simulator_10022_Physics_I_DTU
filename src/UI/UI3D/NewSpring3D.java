@@ -21,7 +21,7 @@ import javafx.stage.Stage;
  */
 public class NewSpring3D extends Stage {
     private int width = 430;
-    private int height = 340;
+    private int height = 400;
 
     private TextField positionX, positionY, positionZ, springConstant, length;
     private ComboBox<Box3D> boxSelector1, boxSelector2;

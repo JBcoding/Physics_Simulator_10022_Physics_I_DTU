@@ -22,7 +22,7 @@ import javafx.stage.Stage;
  */
 public class NewBox3D extends Stage {
     private int width = 200;
-    private int height = 420;
+    private int height = 500;
 
     private TextField positionX, positionY, positionZ, velocityX, velocityY, velocityZ, directionX, directionY, directionZ, mass, staticFrictionConstant, kineticFrictionConstant;
     private PhysicsController pc;

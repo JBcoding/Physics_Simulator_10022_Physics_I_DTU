@@ -27,7 +27,7 @@ public class MainWindow extends Application {
     public static final int WINDOW_ID_NEW_ROPE_JOINT_3D = 7;
 
     private int width = 1080;
-    private int height = 810;
+    private int height = 830;
 
     private PhysicsController physicsController;
     private CanvasController canvasController;

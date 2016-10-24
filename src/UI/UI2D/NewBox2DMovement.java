@@ -20,7 +20,7 @@ import Physics.*;
  */
 public class NewBox2DMovement extends Stage {
     private int width = 200;
-    private int height = 230;
+    private int height = 300;
 
     private TextField positionX, positionY, velocityX, velocityY, mass;
     private PhysicsController pc;

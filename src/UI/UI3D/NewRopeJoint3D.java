@@ -21,7 +21,7 @@ import javafx.stage.Stage;
  */
 public class NewRopeJoint3D extends Stage {
     private int width = 320;
-    private int height = 210;
+    private int height = 260;
 
     private TextField positionX, positionY, positionZ;
     private ComboBox<Box3D> boxSelector1, boxSelector2;
